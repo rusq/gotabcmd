@@ -4,6 +4,8 @@ Tableau tabcmd wrapper for golang
 
 .. image:: https://travis-ci.org/rusq/gotabcmd.svg?branch=master
     :target: https://travis-ci.org/rusq/gotabcmd
+.. image:: https://codecov.io/gh/rusq/gotabcmd/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/rusq/gotabcmd
 
 Purpose
 -------

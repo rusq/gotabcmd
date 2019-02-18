@@ -137,7 +137,14 @@ func (t *Tableau) Logout() (string, error) {
 	if !t.loggedIn {
 		return "", nil
 	}
-	return t.e.run(actLogout)
+
+	out, err := t.e.run(actLogout)
+	if err != nil {
+		return out, err
+	}
+	t.loggedIn = false
+
+	return out, nil
 }
 
 // RefreshExtracts launches extract refresh of one or more datasources.

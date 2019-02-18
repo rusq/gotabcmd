@@ -109,20 +109,25 @@ func TestTableau_Logout(t *testing.T) {
 		e        TabRunner
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		wantCmd []string
-		want    string
-		wantErr bool
+		name         string
+		fields       fields
+		wantCmd      []string
+		want         string
+		wantErr      bool
+		wantLoggedIn bool
 	}{
-		{"not logged int",
+		{"not logged in",
 			fields{e: &fakeRunner{}},
 			nil,
-			"", false},
+			"", false, false},
 		{"ok",
 			fields{loggedIn: true, e: &fakeRunner{}},
 			[]string{"logout"},
-			"*", false},
+			"*", false, false},
+		{"error",
+			fields{loggedIn: true, e: &fakeRunner{returnError: errors.New("НЕЛЬЗЯ ПОКИНУТЬ ОМСК")}},
+			[]string{"logout"},
+			"*", true, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -143,6 +148,9 @@ func TestTableau_Logout(t *testing.T) {
 			fake := tt.fields.e.(*fakeRunner)
 			if !reflect.DeepEqual(fake.requested, tt.wantCmd) {
 				t.Errorf("Tabrunner.requested() = %v, want %v", fake.requested, tt.wantCmd)
+			}
+			if tb.loggedIn != tt.wantLoggedIn {
+				t.Errorf("Tableau.loggedIn = %v want %v", tb.loggedIn, tt.wantLoggedIn)
 			}
 		})
 	}

@@ -11,7 +11,7 @@ const (
 	// name of the tabcmd executable.  Must be in the path.
 	cTabcmd = "tabcmd"
 	// CCommandTimeout is a default command execution timeout
-	CCommandTimeout = 10 * time.Second
+	CCommandTimeout = 15 * time.Second
 )
 
 // tabcmd is a wrapper around "tabcmd"

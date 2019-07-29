@@ -113,22 +113,30 @@ func (t *Tableau) Login(server, username, password string) (string, error) {
 
 // LoginOnline logs into online instance.  Attemts to login into each
 // online server in ServerList in order, until finally logs in (or fails)
-// completely.
+// completely.  Returns aggregated stdout and errors.
 func (t *Tableau) LoginOnline(username, password string) (string, error) {
-	var (
-		out string
-		err error
-		buf bytes.Buffer
-	)
+	// buffers
+	var bufOut, bufErr strings.Builder
+
 	// iterate trough the server list
 	for _, srv := range ServerList {
-		out, err = t.login(srv, username, password)
-		buf.WriteString(out)
+		out, err := t.login(srv, username, password)
+		bufOut.WriteString(out)
 		if err == nil {
 			break
 		}
+		if err != nil {
+			// immediately terminate on executable not found
+			if strings.Contains(err.Error(), "executable file not found") {
+				return "", err
+			}
+		}
 	}
-	return buf.String(), err
+	if !t.loggedIn {
+		return bufOut.String(), fmt.Errorf("failed to login after trying all server: %s", bufErr.String())
+	}
+
+	return bufOut.String(), nil
 }
 
 // Logout does what is should.
